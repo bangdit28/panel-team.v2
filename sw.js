@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tasik-vip-v2';
+const CACHE_NAME = 'tasik-vip-v2-UPDATE-1';
 const urlsToCache = [
   './',
   './index.html',
