@@ -1,110 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>ADMIN V2.2 (DEBUGGER)</title>
+    <title>ADMIN DEBUGGER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        body { background: #000; color: #fff; font-family: monospace; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .box { width: 100%; max-width: 800px; border: 1px solid #333; padding: 20px; border-radius: 10px; margin-bottom: 20px; background: #111; }
-        h2 { margin-top: 0; color: #f43f5e; text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .error-log { background: #500; color: #fff; padding: 10px; border: 1px solid red; width: 100%; margin-bottom: 10px; display: none; }
-        
-        .tabs-header { display: flex; gap: 5px; margin-bottom: 20px; }
-        .tab-btn { background: #222; border: 1px solid #444; color: #aaa; padding: 10px; cursor: pointer; flex: 1; }
-        .tab-btn.active { background: #f43f5e; color: #fff; }
-        .tab-content { display: none; } .tab-content.active { display: block; }
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: #1a1a1a; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #444; }
-        .stat-num { font-size: 28px; font-weight: bold; display: block; }
-        .c-green { color: #00e676; } .c-blue { color: #2979ff; } .c-red { color: #ff1744; }
-        .notif-box { background: rgba(255, 215, 0, 0.05); border: 1px dashed #ffd700; padding: 15px; border-radius: 8px; }
-        .notif-input { width: 100%; padding: 10px; background: #000; color: #ffd700; border: 1px solid #555; }
-        .list-container { max-height: 400px; overflow-y: auto; padding-right: 5px; border: 1px solid #222; background: #0a0a0a; margin-bottom:10px; }
-        .list-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; padding: 8px 12px; margin-bottom: 5px; border-left: 3px solid #555; }
-        input, select, textarea { width: 100%; padding: 10px; background: #000; color: #fff; border: 1px solid #555; margin-bottom:5px; box-sizing:border-box; }
-        button.action-btn { border: none; padding: 6px 10px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold; color: #fff; }
-        .bg-red { background: #d32f2f; } .bg-blue { background: #2979ff; } .bg-green { background: #00e676; color:#000; } .bg-yellow { background: #ffd700; color:#000; }
-    </style>
+    <style>body{background:#000;color:#0f0;font-family:monospace;padding:20px;}</style>
 </head>
 <body>
-
-    <!-- KOTAK ERROR BIAR TAU SALAHNYA DIMANA -->
-    <div id="errorBox" class="error-log"></div>
-
-    <div class="box">
-        <h2>⚡ ADMIN V2.2 (SAFE MODE)</h2>
-
-        <div class="tabs-header">
-            <button class="tab-btn active" onclick="switchTab('dash')">DASHBOARD</button>
-            <button class="tab-btn" onclick="switchTab('range')">MONITOR</button>
-            <button class="tab-btn" onclick="switchTab('country')">NEGARA</button>
-            <button class="tab-btn" onclick="switchTab('upload')">UPLOAD</button>
-        </div>
-
-        <!-- DASHBOARD -->
-        <div id="dash" class="tab-content active">
-            <div class="grid-stats">
-                <div class="stat-card" style="border-color: #00e676;"><span id="countAvail" class="stat-num c-green">0</span><span>AVAILABLE</span></div>
-                <div class="stat-card" style="border-color: #2979ff;"><span id="countActive" class="stat-num c-blue">0</span><span>ACTIVE</span></div>
-                <div class="stat-card" style="border-color: #ff1744;"><span id="countTrash" class="stat-num c-red">0</span><span>DONE/BAD</span></div>
-            </div>
-            <div class="notif-box">
-                <label style="color:#ffd700; font-size:11px;">RUNNING TEXT TEAM:</label>
-                <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input type="text" id="notifMsg" class="notif-input" placeholder="Tulis pesan...">
-                    <button onclick="sendNotif()" class="action-btn bg-yellow" style="width:auto;">KIRIM</button>
-                    <button onclick="clearNotif()" class="action-btn bg-red" style="width:auto;">HAPUS</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MONITOR RANGE -->
-        <div id="range" class="tab-content">
-            <div class="list-container" id="rangeListContainer">Loading...</div>
-        </div>
-
-        <!-- ATUR NEGARA (WAJIB DIISI) -->
-        <div id="country" class="tab-content">
-            <div style="background:#222; padding:10px; border-radius:5px; margin-bottom:10px;">
-                <label style="font-size:10px; color:#aaa;">TAMBAH NEGARA (PENTING):</label>
-                <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input type="text" id="cCode" placeholder="Kode (Contoh: ID)" style="width:30%;">
-                    <input type="text" id="cName" placeholder="Nama (Contoh: INDONESIA)">
-                    <button onclick="saveCountry()" class="action-btn bg-blue" style="width:auto;">SIMPAN</button>
-                </div>
-            </div>
-            <div class="list-container" id="countryListDisplay">Loading...</div>
-        </div>
-
-        <!-- UPLOAD -->
-        <div id="upload" class="tab-content">
-            <label style="font-size:11px; color:#aaa;">UPLOAD NOMOR KE STOCK:</label>
-            <select id="countrySelect"><option>Loading...</option></select>
-            <textarea id="numList" placeholder="Paste nomor..." style="height:100px;"></textarea>
-            <button onclick="uploadStockSafe()" class="action-btn bg-green" style="width:100%; padding:12px; margin-top:10px;">🚀 UPLOAD (ANTI DUPLIKAT)</button>
-            <hr style="border-color:#333; margin:20px 0;">
-            <div style="display:flex; gap:10px;">
-                <button onclick="clearTrash()" class="action-btn" style="background:#ff9800; flex:1; padding:10px;">🧹 BERSIHKAN SAMPAH</button>
-                <button onclick="clearAll()" class="action-btn bg-red" style="flex:1; padding:10px;">🗑️ RESET TOTAL</button>
-            </div>
-        </div>
-    </div>
+    <h2>🕵️ SYSTEM CHECKER</h2>
+    <div id="logs">Memulai diagnosa...<br></div>
 
     <script>
-        // FUNGSI ERROR LOG (BIAR GAK BLANK PUTIH)
-        function logError(msg) {
-            const box = document.getElementById('errorBox');
-            box.style.display = 'block';
-            box.innerText = "ERROR: " + msg + " (Cek Config Firebase!)";
-            console.error(msg);
-        }
+        function log(msg) { document.getElementById('logs').innerHTML += ">> " + msg + "<br>"; }
 
-        try {
-            // 🔥🔥🔥 ISI CONFIG FIREBASE BARU DENGAN BENAR 🔥🔥🔥
-            // HATI-HATI: Jangan sampai ada koma berlebih di akhir
-            const firebaseConfig = {
+        // 🔥 1. TEMPEL CONFIG LO DISINI 🔥
+        const firebaseConfig = {
   apiKey: "AIzaSyBh1JLpqEZr8yt9ShdL0fGmP3uODqbEAlA",
   authDomain: "panelteamv2.firebaseapp.com",
   projectId: "panelteamv2",
@@ -112,156 +23,39 @@
   messagingSenderId: "810088823200",
   appId: "1:810088823200:web:3c72dda276d79054018cc5"
 };
-            
-            firebase.initializeApp(firebaseConfig);
+
+        try {
+            log("Menginisialisasi Firebase...");
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
-            
-            // FOLDER STOCK BARU
-            const DB_TARGET = 'stock';
+            log("Firebase Init OK.");
 
-            // --- NAVIGATION ---
-            window.switchTab = (id) => {
-                document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-                document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                event.target.classList.add('active');
-            }
-
-            // --- MONITORING (ANTI CRASH) ---
-            let lastUpdate = 0;
-            db.ref(DB_TARGET).on('value', snap => {
-                try {
-                    const now = Date.now();
-                    // Throttle: Render max 1x per detik
-                    if (now - lastUpdate > 1000) { 
-                        renderDashboard(snap.val()); 
-                        lastUpdate = now; 
-                    } else { 
-                        setTimeout(() => renderDashboard(snap.val()), 1000); 
-                    }
-                } catch(e) { logError("Monitoring Error: " + e.message); }
-            }, (error) => {
-                logError("Firebase Permission Denied! Cek Rules: " + error.message);
-            });
-
-            function renderDashboard(data) {
-                if(!data) {
-                    // Kalau data kosong, reset UI ke 0 (Jangan Crash)
-                    document.getElementById('countAvail').innerText = "0";
-                    document.getElementById('countActive').innerText = "0";
-                    document.getElementById('countTrash').innerText = "0";
-                    document.getElementById('rangeListContainer').innerHTML = "<div style='text-align:center;color:#555;'>Database Kosong</div>";
-                    return;
-                }
-
-                let avail=0, active=0, trash=0; 
-                let rangeStats = {};
-
-                Object.values(data).forEach(item => {
-                    if (item.status === 'AVAILABLE') avail++; 
-                    else if (item.status === 'TAKEN') active++; 
-                    else trash++;
-
-                    const rName = item.range_name || "MANUAL";
-                    if (!rangeStats[rName]) rangeStats[rName] = { total: 0, avail: 0, country: item.country };
-                    rangeStats[rName].total++;
-                    if (item.status === 'AVAILABLE') rangeStats[rName].avail++;
-                });
-
-                document.getElementById('countAvail').innerText = avail;
-                document.getElementById('countActive').innerText = active;
-                document.getElementById('countTrash').innerText = trash;
-
-                const rangeContainer = document.getElementById('rangeListContainer');
-                let html = "";
-                Object.keys(rangeStats).forEach(rName => {
-                    const stat = rangeStats[rName];
-                    const color = stat.avail > 0 ? '#00ff88' : '#555';
-                    html += `<div class="list-item" style="border-left-color:${color}"><div class="item-info"><div style="font-weight:bold; color:#fff;">${rName} <span style="color:#777;">(${stat.country})</span></div><div style="color:#aaa;">Sisa: <b style="color:${color}">${stat.avail}</b> / Total: ${stat.total}</div></div><button class="action-btn bg-red" onclick="deleteRange('${rName}')">HAPUS</button></div>`;
-                });
-                rangeContainer.innerHTML = html;
-            }
-
-            // --- COUNTRY SETTINGS ---
-            db.ref('settings/countries').on('value', snap => {
-                const d = snap.val();
-                const listDiv = document.getElementById('countryListDisplay');
-                const selectDiv = document.getElementById('countrySelect');
-                listDiv.innerHTML = ""; selectDiv.innerHTML = "";
-
-                if(d) {
-                    Object.keys(d).forEach(key => {
-                        listDiv.innerHTML += `<div class="list-item"><div class="item-info"><span style="color:#00e5ff; font-weight:bold;">${key}</span> : ${d[key]}</div><div class="item-actions"><button class="action-btn bg-blue" onclick="editCountry('${key}', '${d[key]}')">EDIT</button><button class="action-btn bg-red" onclick="delCountry('${key}')">X</button></div></div>`;
-                        const o = document.createElement('option'); o.value = key; o.innerText = d[key]; selectDiv.appendChild(o);
-                    });
+            log("Mencoba koneksi ke Database...");
+            const connectedRef = db.ref(".info/connected");
+            connectedRef.on("value", (snap) => {
+                if (snap.val() === true) {
+                    log("✅ KONEKSI SUKSES! (Online)");
                 } else {
-                    listDiv.innerHTML = "<div style='color:red; text-align:center;'>BELUM ADA NEGARA! ISI DULU!</div>";
-                    selectDiv.innerHTML = "<option>Kosong</option>";
+                    log("❌ KONEKSI PUTUS / GAGAL (Offline)");
                 }
             });
 
-            window.saveCountry = () => {
-                const c = document.getElementById('cCode').value.toUpperCase().trim();
-                const n = document.getElementById('cName').value.trim();
-                if(c && n) {
-                    db.ref('settings/countries/' + c).set(n);
-                    document.getElementById('cCode').value = "";
-                    document.getElementById('cName').value = "";
-                } else alert("Isi Kode & Nama!");
-            }
-            window.editCountry = (c, n) => {
-                document.getElementById('cCode').value = c;
-                document.getElementById('cName').value = n;
-                switchTab('country');
-            }
-            window.delCountry = (k) => { if(confirm("Hapus?")) db.ref('settings/countries/' + k).remove(); }
-
-            // --- UPLOAD & RESET ---
-            window.uploadStockSafe = () => {
-                const raw = document.getElementById('numList').value;
-                const country = document.getElementById('countrySelect').value;
-                if(!raw) return alert("Kosong!");
-                if(country === "Loading..." || country === "Kosong") return alert("SETTING NEGARA DULU DI TAB SEBELAH!");
-
-                const lines = raw.split(/\n/);
-                const ts = Date.now();
-                db.ref(DB_TARGET).once('value', snap => {
-                    const exist = snap.val() || {};
-                    let updates = {}; let count=0;
-                    lines.forEach(l => {
-                        let n = l.replace(/\D/g, ''); 
-                        if(n.length>6 && !exist[n]) {
-                            updates[n] = { number:n, country:country, otp:"", status:"AVAILABLE", range_name:"MANUAL V2", timestamp:ts };
-                            count++;
-                        }
-                    });
-                    if(count>0) db.ref(DB_TARGET).update(updates, ()=> { alert(`Berhasil: ${count}`); document.getElementById('numList').value=""; });
-                    else alert("Semua nomor sudah ada / format salah.");
+            log("Mencoba baca data 'settings/countries'...");
+            db.ref('settings/countries').once('value')
+                .then((snap) => {
+                    if(snap.exists()) {
+                        log("✅ DATA DITEMUKAN: " + JSON.stringify(snap.val()));
+                    } else {
+                        log("⚠️ KONEKSI OK, TAPI DATA KOSONG (NULL). Silakan isi data lewat Import JSON.");
+                    }
+                })
+                .catch((error) => {
+                    log("❌ ERROR BACA DATA: " + error.message);
+                    log("Saran: Cek RULES atau API KEY.");
                 });
-            }
 
-            window.deleteRange = (rn) => {
-                if(confirm("Hapus Range?")) db.ref(DB_TARGET).once('value', s => {
-                    let u = {};
-                    s.forEach(c => { if(c.val().range_name===rn) u[c.key]=null; });
-                    db.ref(DB_TARGET).update(u);
-                });
-            }
-            window.clearTrash = () => {
-                if(confirm("Hapus DONE/BAD?")) db.ref(DB_TARGET).once('value', s => {
-                    let u = {};
-                    s.forEach(c => { if(c.val().status==='DONE'||c.val().status==='BAD') u[c.key]=null; });
-                    db.ref(DB_TARGET).update(u);
-                });
-            }
-            window.clearAll = () => { if(confirm("RESET TOTAL?")) db.ref(DB_TARGET).remove(); }
-            
-            // --- NOTIF ---
-            window.sendNotif = () => db.ref('system/notification').set(document.getElementById('notifMsg').value);
-            window.clearNotif = () => { db.ref('system/notification').remove(); document.getElementById('notifMsg').value = ""; }
-
-        } catch(err) {
-            logError("CRITICAL ERROR: " + err.message);
+        } catch (e) {
+            log("❌ CRITICAL SCRIPT ERROR: " + e.message);
         }
     </script>
 </body>
