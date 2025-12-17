@@ -3,360 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TASIK VIP V2 (DEV)</title>
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Creepster&family=Lobster&family=Orbitron:wght@400;700&family=Poppins:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>TASIK V2 (BYPASS)</title>
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        /* CSS SAMA DENGAN V202 */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
-        body { background: #0f172a; color: #fff; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; padding-bottom: 80px; min-height: 100vh; overflow-x: hidden; }
-        #notifBar { position: fixed; top: 0; left: 0; width: 100%; background: #ffd700; color: #000; z-index: 9999; font-weight: bold; font-size: 11px; padding: 5px 0; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        marquee { width: 100%; display: block; text-transform: uppercase; }
-        .page-section { display: none; padding: 15px; padding-top: 40px; animation: fadeIn 0.3s; }
-        .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .box { background: #1e293b; padding: 20px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
-        h2 { margin: 0; color: #f43f5e; font-size: 20px; font-weight: 800; letter-spacing: 1px; }
-        .user-badge { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); text-transform: uppercase; font-weight: bold; }
-        select, input[type="text"], input[type="number"] { width: 100%; padding: 14px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 10px; font-weight: bold; margin-bottom: 10px; font-size: 14px; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 5px; text-transform: uppercase; transition: transform 0.1s; }
-        button:active { transform: scale(0.97); }
-        .btn-start { background: linear-gradient(135deg, #f43f5e, #e11d48); color: #fff; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4); }
-        .btn-bad { background: #ef4444; color: #fff; }
-        .btn-next { background: #22c55e; color: #000; }
-        .btn-save { background: #3b82f6; color: #fff; }
-        .display-num { font-size: 28px; font-family: 'Roboto Mono', monospace; background: #000; padding: 20px; border-radius: 12px; border: 2px dashed #f43f5e; margin: 15px 0; text-align: center; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .otp-area { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 15px; min-height: 100px; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .otp-code { font-size: 48px; font-weight: 800; color: #4ade80; letter-spacing: 5px; animation: popIn 0.3s; text-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #1e293b; border-top: 1px solid #334155; display: flex; justify-content: space-around; align-items: center; z-index: 999; padding-bottom: 5px; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; font-size: 10px; font-weight: bold; width: 25%; height: 100%; cursor: pointer; transition: 0.2s; }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
-        .nav-item.active { color: #f43f5e; }
-        .chat-container { height: calc(100vh - 180px); overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
-        .chat-bubble { background: #334155; padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 12px; line-height: 1.4; position: relative; word-wrap: break-word; }
-        .chat-self { align-self: flex-end; background: #f43f5e; color: #fff; border-bottom-right-radius: 2px; }
-        .chat-other { align-self: flex-start; border-bottom-left-radius: 2px; }
-        .chat-name { font-size: 9px; opacity: 0.7; margin-bottom: 2px; display: block; font-weight: bold; }
-        .chat-input-area { position: fixed; bottom: 65px; left: 0; width: 100%; padding: 10px; background: #0f172a; border-top: 1px solid #334155; display: flex; gap: 10px; z-index: 990; }
-        .history-list { display: flex; flex-direction: column; gap: 8px; }
-        .hist-card { background: #1e293b; padding: 12px; border-radius: 10px; border-left: 4px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        .hist-card.success { border-left-color: #4ade80; }
-        .hist-card.pending { border-left-color: #fbbf24; }
-        .setting-group { margin-bottom: 20px; }
-        .setting-label { font-size: 12px; color: #94a3b8; margin-bottom: 8px; display: block; }
-        input[type="color"] { width: 100%; height: 50px; border: none; padding: 0; border-radius: 10px; cursor: pointer; }
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 99999; display: flex; align-items: center; justify-content: center; }
-        .login-inner { width: 85%; max-width: 320px; text-align: center; background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid #334155; }
+        /* CSS TETAP SAMA */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { background: #0f172a; color: #fff; font-family: sans-serif; margin: 0; padding: 10px; padding-top: 45px; min-height: 100vh; }
+        .box { background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 15px; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        h2 { margin: 0; color: #f43f5e; }
+        select, button { width: 100%; padding: 14px; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
+        .btn-start { background: #f43f5e; }
         .hidden { display: none !important; }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        #debugLog { color: yellow; font-size: 10px; font-family: monospace; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="notifBar"><marquee id="notifText">...</marquee></div>
+    <!-- DEBUGGER DI LAYAR -->
+    <div id="debugLog">System Ready...</div>
 
-    <div id="loginOverlay">
-        <div class="login-inner">
-            <h2 style="margin-bottom:20px; color:#f43f5e;">TASIK VIP V2</h2>
-            <input type="text" id="inputLoginName" placeholder="Nama Anda...">
-            <button class="btn-start" onclick="doLogin()">MASUK APLIKASI</button>
+    <div class="box">
+        <div class="header">
+            <h2>TASIK VIP V2 (BYPASS)</h2>
+            <div id="opName">User</div>
         </div>
-    </div>
 
-    <!-- HOME -->
-    <div id="pageHome" class="page-section active">
-        <div class="box">
-            <div class="header-top">
-                <h2>TASIK VIP</h2>
-                <div class="user-badge" id="dispNameHome">User</div>
-            </div>
-            <div id="menuArea">
-                <label class="setting-label">Pilih Server Negara:</label>
-                <select id="countryPick"><option>Loading...</option></select>
-                <button class="btn-start" onclick="smartStartFarming()">🚀 AMBIL NOMOR</button>
-            </div>
-            <div id="workArea" class="hidden">
-                <div class="display-num" onclick="copyText(document.getElementById('txtNum').innerText)">
-                    <span id="txtNum">...</span>
-                </div>
-                <div class="otp-area">
-                    <div id="statusWait" style="color:#fbbf24; font-size:12px; animation:blink 1.5s infinite;">📡 MENUNGGU SMS...</div>
-                    <div id="myOTP" class="otp-code hidden" onclick="copyText(this.innerText)">---</div>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-bad" onclick="actionBad()">🔄 GANTI</button>
-                    <button class="btn-next" onclick="actionNext()">✅ LANJUT</button>
-                </div>
-                <button class="btn-stop" style="margin-top:15px; border:1px solid #475569;" onclick="stopFarmingUI()">⏹️ STOP SESSION</button>
-            </div>
+        <div id="menuArea">
+            <label>Pilih Negara (HARDCODED):</label>
+            <!-- 🔥 KITA ISI MANUAL DISINI, GAK USAH NUNGGU DATABASE 🔥 -->
+            <select id="countryPick">
+                <option value="ID">INDONESIA</option>
+                <option value="MY">MALAYSIA</option>
+                <option value="US">UNITED STATES</option>
+                <option value="VN">VIETNAM</option>
+            </select>
+            <button class="btn-start" onclick="startFarming()">🚀 AMBIL NOMOR</button>
         </div>
-    </div>
 
-    <!-- HISTORY -->
-    <div id="pageHistory" class="page-section">
-        <h2 style="margin-bottom:15px; padding-left:10px;">RIWAYAT SAYA</h2>
-        <div id="historyContainer" class="history-list">
-            <div style="text-align:center; padding:30px; color:#666; font-size:12px;">Belum ada riwayat.</div>
+        <div id="workArea" class="hidden">
+            <div style="font-size:24px; text-align:center; padding:20px; border:2px dashed #f43f5e; margin-bottom:10px;" id="txtNum">...</div>
+            <div style="text-align:center; margin-bottom:10px; color:#fbbf24;" id="statusWait">MENUNGGU SMS...</div>
+            <div style="font-size:40px; text-align:center; color:#4ade80; display:none;" id="myOTP">---</div>
+            <button onclick="window.location.reload()" style="background:#333; border:1px solid #555;">RESET / KEMBALI</button>
         </div>
-    </div>
-
-    <!-- CHAT -->
-    <div id="pageChat" class="page-section">
-        <h2 style="margin-bottom:10px; padding-left:10px;">TEAM CHAT</h2>
-        <div id="chatBox" class="chat-container"></div>
-        <div class="chat-input-area">
-            <input type="text" id="chatMsg" placeholder="Tulis pesan..." style="margin:0;">
-            <button class="btn-start" style="width:60px; margin:0;" onclick="sendChat()">➤</button>
-        </div>
-    </div>
-
-    <!-- PROFIL -->
-    <div id="pageProfile" class="page-section">
-        <div class="box">
-            <h2 style="margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;">PENGATURAN</h2>
-            <div class="setting-group">
-                <label class="setting-label">Ubah Nama</label>
-                <input type="text" id="inputNewName" placeholder="Nama Baru...">
-            </div>
-            <div class="setting-group">
-                <label class="setting-label">Gaya Font</label>
-                <select id="inputFont">
-                    <option value="'Poppins', sans-serif">Poppins (Default)</option>
-                    <option value="'Orbitron', sans-serif">Orbitron (Cyber)</option>
-                    <option value="'Bangers', cursive">Bangers (Komik)</option>
-                    <option value="'Lobster', cursive">Lobster (Latin)</option>
-                    <option value="'Creepster', cursive">Creepster (Horror)</option>
-                    <option value="'Roboto Mono', monospace">Hacker (Mono)</option>
-                </select>
-            </div>
-            <div class="setting-group">
-                <label class="setting-label">Warna Nama</label>
-                <input type="color" id="inputColor" value="#ffffff">
-            </div>
-            <button class="btn-save" onclick="saveProfileSettings()">💾 SIMPAN</button>
-        </div>
-    </div>
-
-    <!-- NAV -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('pageHome', this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>HOME</span></div>
-        <div class="nav-item" onclick="switchTab('pageHistory', this)"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg><span>HISTORY</span></div>
-        <div class="nav-item" onclick="switchTab('pageChat', this)"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg><span>CHAT</span></div>
-        <div class="nav-item" onclick="switchTab('pageProfile', this)"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>PROFIL</span></div>
     </div>
 
     <script>
-        // 🔥🔥 ISI CONFIG FIREBASE BARU DISINI 🔥🔥
+        function log(msg) { document.getElementById('debugLog').innerText = msg; }
+
+        // 🔥 PASTIKAN CONFIG INI BENAR DARI PROJECT V2 LO 🔥
         const firebaseConfig = {
-                apiKey: "AIzaSyBh1JLpqEZr8yt9ShdL0fGmP3uODqbEAlA",
-                authDomain: "panelteamv2.firebaseapp.com",
-                databaseURL: "https://panelteamv2-default-rtdb.asia-southeast1.firebasedatabase.app",
-                projectId: "panelteamv2",
-                storageBucket: "panelteamv2.firebasestorage.app",
-                messagingSenderId: "810088823200",
-                appId: "1:810088823200:web:3c72dda276d79054018cc5"
-                };
-        // ----------------------------------------
+            apiKey: "AIzaSyBh1JLpqEZr8yt9ShdL0fGmP3uODqbEA1A",
+            authDomain: "panelteamv2.firebaseapp.com",
+            databaseURL: "https://panelteamv2-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "panelteamv2",
+            storageBucket: "panelteamv2.firebasestorage.app",
+            messagingSenderId: "810088823200",
+            appId: "1:810088823200:web:3c72dda276d79054018cc5"
+        };
 
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // KARENA DB BARU, KITA PAKE PATH 'stock' NORMAL AJA
-        // GAK PERLU 'stock_vip' KARENA UDAH BEDA RUMAH.
-        const DB_STOCK = 'stock'; 
-        const DB_CHAT = 'chat';
-        
-        const LS_KEY_NAME = 'V2_NEW_USER'; 
-        const LS_KEY_HIST = 'V2_NEW_HIST';
-        const LS_PREF_FONT = 'V2_NEW_FONT';
-        const LS_PREF_COLOR = 'V2_NEW_COLOR';
-
-        let mySessionID = localStorage.getItem('V2_NEW_SESS');
-        if(!mySessionID) { mySessionID = "U_"+Math.floor(Math.random()*999999); localStorage.setItem('V2_NEW_SESS', mySessionID); }
-
-        let currentUser = localStorage.getItem(LS_KEY_NAME);
-        let currentNum = null;
-        let selectedRegion = "";
-        let listenerRef = null;
-        let myHistory = JSON.parse(localStorage.getItem(LS_KEY_HIST)) || [];
-        const audioBeep = new Audio('https://media.geeksforgeeks.org/wp-content/uploads/20190531135120/beep.mp3');
-
-        if(currentUser) initApp();
-        else document.getElementById('loginOverlay').style.display = 'flex';
-
-        function doLogin() {
-            const n = document.getElementById('inputLoginName').value.trim();
-            if(!n) return alert("Isi nama!");
-            currentUser = n; localStorage.setItem(LS_KEY_NAME, n); initApp();
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+            log("Firebase Init OK. Siap ambil nomor.");
+        } catch(e) {
+            log("ERROR FIREBASE: " + e.message);
+            alert("Firebase Error: " + e.message);
         }
 
-        function initApp() {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainApp').classList.remove('hidden');
-            applyUserPreferences();
-            loadCountries();
-            initHistory();
-            initChatSafe();
-            checkActiveSession();
-            document.getElementById('inputNewName').value = currentUser;
-        }
+        const DB_STOCK = 'stock'; // Folder stock normal
+        const mySessionID = "U_" + Math.floor(Math.random() * 999999);
 
-        // --- CHAT SAFE ---
-        function initChatSafe() {
-            try {
-                db.ref(DB_CHAT).limitToLast(50).on('child_added', snap => {
-                    const d = snap.val();
-                    if(d && d.name && d.msg) appendChat(d.name, d.msg, d.id === mySessionID);
-                });
-                document.getElementById('chatMsg').addEventListener('keypress', e => { if (e.key === 'Enter') sendChat(); });
-            } catch(e) {}
-        }
-        function sendChat() {
-            const input = document.getElementById('chatMsg');
-            const msg = input.value.trim();
-            if(!msg) return;
-            db.ref(DB_CHAT).push({ name: currentUser, msg: msg, id: mySessionID, time: Date.now() });
-            input.value = "";
-            setTimeout(() => document.getElementById('chatBox').scrollTop = 99999, 100);
-        }
-        function appendChat(name, msg, isSelf) {
-            const box = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = `chat-bubble ${isSelf ? 'chat-self' : 'chat-other'}`;
-            div.innerHTML = `<span class="chat-name">${name}</span>${msg.replace(/</g, "&lt;")}`;
-            box.appendChild(div);
-            box.scrollTop = 99999;
-        }
-
-        // --- NAVIGATION & PROFILE ---
-        window.switchTab = (pageId, btnElement) => {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            btnElement.classList.add('active');
-            if(pageId === 'pageChat') setTimeout(() => document.getElementById('chatBox').scrollTop = 99999, 100);
-        }
-        function saveProfileSettings() {
-            const newName = document.getElementById('inputNewName').value.trim();
-            if(newName) { currentUser = newName; localStorage.setItem(LS_KEY_NAME, newName); }
-            localStorage.setItem(LS_PREF_FONT, document.getElementById('inputFont').value);
-            localStorage.setItem(LS_PREF_COLOR, document.getElementById('inputColor').value);
-            applyUserPreferences();
-            alert("Profil berhasil disimpan!");
-        }
-        function applyUserPreferences() {
-            const font = localStorage.getItem(LS_PREF_FONT) || "'Poppins', sans-serif";
-            const color = localStorage.getItem(LS_PREF_COLOR) || "#ffffff";
-            const d = document.getElementById('dispNameHome');
-            d.innerText = currentUser; d.style.fontFamily = font; d.style.color = color; d.style.borderColor = color;
-        }
-
-        // --- FARMING ---
-        function checkActiveSession() {
-            db.ref(DB_STOCK).orderByChild('owner').equalTo(mySessionID).once('value', snap => {
-                const data = snap.val();
-                if(data) {
-                    const key = Object.keys(data)[0];
-                    if(data[key].status === 'TAKEN') {
-                        currentNum = key; selectedRegion = data[key].country;
-                        showActiveUI(); attachListener(currentNum);
-                    }
-                }
-            });
-        }
-        function smartStartFarming() {
-            selectedRegion = document.getElementById('countryPick').value;
-            db.ref(DB_STOCK).orderByChild('owner').equalTo(mySessionID).once('value', snap => {
-                let found = null;
-                snap.forEach(c => { if(c.val().status === 'TAKEN') found = c.key; });
-                if(found) { alert("Resume..."); currentNum = found; showActiveUI(); attachListener(currentNum); }
-                else { showActiveUI(); findNewNumber(); }
-            });
-        }
-        function findNewNumber() {
-            resetUI(); document.getElementById('txtNum').innerText = "Mencari...";
-            if(listenerRef) listenerRef.off();
+        function startFarming() {
+            log("Mencari nomor...");
+            const region = document.getElementById('countryPick').value;
+            
             db.ref(DB_STOCK).once('value', snap => {
-                const d = snap.val();
-                let c = [];
-                if(d) Object.keys(d).forEach(k => { if(d[k].status === 'AVAILABLE' && d[k].country === selectedRegion && k !== currentNum) c.push(k); });
-                if(c.length === 0) { alert("Stok Habis!"); stopFarmingUI(); return; }
-                c.sort(() => Math.random() - 0.5);
-                const t = c[0];
-                db.ref(DB_STOCK+'/'+t).update({ status: 'TAKEN', owner: mySessionID, op_name: currentUser }, (e) => {
-                    if(!e) {
-                        db.ref(DB_STOCK+'/'+t).once('value', s => {
-                            if(s.val().owner === mySessionID) { currentNum = t; document.getElementById('txtNum').innerText = currentNum; copyText(currentNum); attachListener(currentNum); }
-                            else findNewNumber();
-                        });
-                    } else findNewNumber();
+                const data = snap.val();
+                if(!data) { 
+                    log("DATABASE KOSONG / GAK KEHUBUNG!"); 
+                    alert("Database Stock Kosong! Cek Admin -> Upload dulu.");
+                    return; 
+                }
+
+                let candidates = [];
+                Object.keys(data).forEach(k => {
+                    // Cari yang AVAILABLE dan Negaranya COCOK
+                    if(data[k].status === 'AVAILABLE' && data[k].country === region) {
+                        candidates.push(k);
+                    }
+                });
+
+                if(candidates.length === 0) {
+                    log("STOK HABIS UNTUK " + region);
+                    alert("Stok Habis bro!");
+                    return;
+                }
+
+                // Ambil 1 acak
+                const target = candidates[Math.floor(Math.random() * candidates.length)];
+                log("Mencoba lock: " + target);
+
+                // Lock Nomor
+                db.ref(DB_STOCK + '/' + target).update({
+                    status: 'TAKEN',
+                    owner: mySessionID,
+                    op_name: 'DevUser'
+                }, (error) => {
+                    if(error) {
+                        log("GAGAL UPDATE DB: " + error.message);
+                        alert("Gagal ambil nomor (Permission Denied?)");
+                    } else {
+                        log("Sukses! Nomor didapat.");
+                        document.getElementById('menuArea').classList.add('hidden');
+                        document.getElementById('workArea').classList.remove('hidden');
+                        document.getElementById('txtNum').innerText = target;
+                        listenOTP(target);
+                    }
                 });
             });
         }
-        function attachListener(num) {
-            if(listenerRef) listenerRef.off();
-            listenerRef = db.ref(DB_STOCK+'/'+num);
-            listenerRef.on('value', snap => {
+
+        function listenOTP(num) {
+            db.ref(DB_STOCK + '/' + num).on('value', snap => {
                 const d = snap.val();
-                if(!d) { stopFarmingUI(); return; }
-                if(d.number !== currentNum) return;
-                if(d.otp && d.otp.length > 2) {
-                    const el = document.getElementById('myOTP');
-                    if(el.innerText !== d.otp) {
-                        document.getElementById('statusWait').classList.add('hidden');
-                        el.innerText = d.otp; el.classList.remove('hidden');
-                        audioBeep.play().catch(()=>{}); copyText(d.otp);
-                        upsertHistory(d.number, d.country, d.otp, 'SUCCESS');
-                    }
+                if(d && d.otp) {
+                    document.getElementById('statusWait').style.display = 'none';
+                    document.getElementById('myOTP').style.display = 'block';
+                    document.getElementById('myOTP').innerText = d.otp;
+                    log("OTP MASUK: " + d.otp);
                 }
             });
         }
-        function actionBad() { if(currentNum) { upsertHistory(currentNum, selectedRegion, "PENDING", 'PENDING'); db.ref(DB_STOCK+'/'+currentNum).update({status:'BAD'}); } findNewNumber(); }
-        function actionNext() { if(currentNum) { db.ref(DB_STOCK+'/'+currentNum).update({status:'DONE'}); } findNewNumber(); }
-
-        // --- HISTORY ---
-        function initHistory() {
-            renderHistoryList();
-            db.ref(DB_STOCK).orderByChild('last_update').limitToLast(20).on('child_changed', snap => {
-                const d = snap.val();
-                const item = myHistory.find(i => i.num === d.number && i.status === 'PENDING');
-                if(item && d.otp && d.otp.length > 2) upsertHistory(d.number, d.country, d.otp, 'SUCCESS');
-            });
-        }
-        function upsertHistory(num, country, otpVal, status) {
-            const idx = myHistory.findIndex(i => i.num === num);
-            if(idx > -1) {
-                if(myHistory[idx].status === 'PENDING' && status === 'SUCCESS') { myHistory[idx].otp = otpVal; myHistory[idx].status = 'SUCCESS'; audioBeep.play().catch(()=>{}); }
-            } else { myHistory.unshift({ num, country, otp: otpVal, status }); }
-            localStorage.setItem(LS_KEY_HIST, JSON.stringify(myHistory));
-            renderHistoryList();
-        }
-        function renderHistoryList() {
-            const c = document.getElementById('historyContainer');
-            if(myHistory.length === 0) return;
-            c.innerHTML = "";
-            myHistory.forEach(i => {
-                const div = document.createElement('div');
-                div.className = `hist-card ${i.status==='PENDING'?'pending':'success'}`;
-                div.innerHTML = `<div><b>${getFlag(i.country)} ${i.country}</b><br><small style="color:#aaa">${i.num}</small></div><div style="font-weight:bold; color:${i.status==='PENDING'?'#fbbf24':'#4ade80'}">${i.status==='PENDING'?'Menunggu...':i.otp}</div>`;
-                c.appendChild(div);
-            });
-        }
-
-        // --- UTILS ---
-        function showActiveUI() { document.getElementById('menuArea').classList.add('hidden'); document.getElementById('workArea').classList.remove('hidden'); document.getElementById('txtNum').innerText = currentNum; }
-        function stopFarmingUI() { if(listenerRef) listenerRef.off(); document.getElementById('workArea').classList.add('hidden'); document.getElementById('menuArea').classList.remove('hidden'); }
-        function resetUI() { document.getElementById('statusWait').classList.remove('hidden'); document.getElementById('myOTP').classList.add('hidden'); }
-        function loadCountries() { db.ref('settings/countries').on('value', snap => { const d = snap.val(); const sel = document.getElementById('countryPick'); sel.innerHTML = ""; if(d) Object.keys(d).forEach(k => { const o = document.createElement('option'); o.value = k; o.innerText = d[k]; sel.appendChild(o); }); }); }
-        function copyText(val) { if(navigator.clipboard) navigator.clipboard.writeText(val); }
-        function getFlag(name) { const f = {"INDONESIA":"🇮🇩","MALAYSIA":"🇲🇾"}; return f[name?.toUpperCase()] || "🌍"; }
     </script>
 </body>
 </html>
